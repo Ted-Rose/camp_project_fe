@@ -12,6 +12,57 @@ const Trading = () => {
   const [nfcSerialNumber, setNfcSerialNumber] = useState("asdfg456"); // State for NFC cards serial number
   const location = useLocation(); // Using location from React Router DOM to get token
 
+  const my_array = [
+    {
+      key: "Vārds",
+      value: "Dāvids",
+    },
+    {
+      key: "NFC_numurs",
+      value: "04:89:d0:3a:4b:11:90",
+    },
+    {
+      key: "Nauda",
+      value: 150,
+    },
+    {
+      key: "Vārds",
+      value: "John",
+    },
+    {
+      key: "NFC_numurs",
+      value: "03:ab:cd:ef:12:34:56",
+    },
+    {
+      key: "Nauda",
+      value: 200,
+    },
+  ];
+
+  function getNaudaAndVards(serialNumber) {
+    const item = my_array.find(
+      (obj) => obj.key === "NFC_numurs" && obj.value === serialNumber
+    );
+
+    if (item) {
+      const NaudaItem = my_array.find((obj) => obj.key === "Nauda");
+      const VardsItem = my_array.find((obj) => obj.key === "Vārds");
+
+      if (NaudaItem && VardsItem) {
+        const { value: Nauda } = NaudaItem;
+        const { value: Vārds } = VardsItem;
+        return (
+          <div>
+            <p>Vārds: {Vārds}</p>
+            <p>Pieejamā nauda: {Nauda} EUR</p>
+          </div>
+        );
+      }
+    }
+
+    return <p>Neatradu NFC īpašnieku.</p>;
+  }
+
   useEffect(() => {
     getNewPoints();
   }, []);
@@ -118,14 +169,15 @@ const Trading = () => {
         <div className="bg-light p-5 rounded">
           <div className="text-center">
             <Nfc
-              changeSerializer={setNfcSerialNumber}
+              changeSerial={setNfcSerialNumber}
               // changeMessage={setMessage}
             />
-            <h2>{player?.name}</h2>
+            {/* <h2>{player?.name}</h2>
             <h3>{player?.points} punkti</h3>
-            <h3>Serial: {Nfc}</h3>
-
-            <div className="btn-group-lg center">
+            <h3>Serial: {Nfc}</h3> */}
+            {getNaudaAndVards(nfcSerialNumber)}
+            {/* Tavs NFC numurs ir: {nfcSerialNumber} */}
+            {/* <div className="btn-group-lg center">
               {[-10, -5, -1, 1, 5, 10].map((Value) => (
                 <button
                   key={Value}
@@ -143,9 +195,9 @@ const Trading = () => {
                   {Value > 0 ? "+" : "-"} {Math.abs(Value)}
                 </button>
               ))}
-            </div>
+            </div> */}
           </div>
-          {!authorized && <h2>Nepieciešams atkārtoti autorizēties!</h2>}
+          {/* {!authorized && <h2>Nepieciešams atkārtoti autorizēties!</h2>} */}
         </div>
       </main>
     </div>

@@ -37,12 +37,12 @@ const Nfc = (props) => {
 
     // Add event listener to the scan button
     scanButton.addEventListener("click", async () => {
-      log("User clicked scan button");
+      // log("User clicked scan button");
 
       try {
         const ndef = new NDEFReader();
         await ndef.scan();
-        log("> Scan started");
+        log("NFC lasīšana ir ieslēgta!");
 
         // Event listener for reading errors
         ndef.addEventListener("readingerror", () => {
@@ -51,9 +51,9 @@ const Nfc = (props) => {
 
         // Event listener for successful reading
         ndef.addEventListener("reading", ({ message, serialNumber }) => {
-          log(`> Serial Number: ${serialNumber}`);
-          props.changeSerial({ serialNumber });
-          log(`> Records: (${message.records.length})`);
+          log(`> Tavs NFC kods ir: ${serialNumber}`);
+          props.changeSerial(serialNumber);
+          // log(`> Records: (${message.records.length})`);
           // props.changeMessage({ message });
         });
       } catch (error) {
