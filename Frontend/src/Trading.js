@@ -10,58 +10,64 @@ const Trading = () => {
   const [playerData, setPlayerData] = useState([]);
   const [authorized, setAuthorized] = useState(false);
   const [nfcSerialNumber, setNfcSerialNumber] = useState("asdfg456"); // State for NFC cards serial number
+  const [varDSearch, setVarDSearch] = useState(""); // State for Vārds input field
+  const [paroleSearch, setParoleSearch] = useState(""); // State for Parole input field
+  const [Nauda, setNauda] = useState(""); // State for Parole input field
   const location = useLocation(); // Using location from React Router DOM to get token
 
   const my_array = [
     {
-      key: "Vārds",
-      value: "Dāvids",
+      Vārds: "Dāvids",
+      NFC_numurs: "04:89:d0:3a:4b:11:90",
+      Parole: "123",
+      Nauda: 100,
     },
     {
-      key: "NFC_numurs",
-      value: "04:89:d0:3a:4b:11:90",
+      Vārds: "Tedis",
+      NFC_numurs: "03:ab:cd:ef:12:34:56",
+      Parole: "12",
+      Nauda: 200,
     },
     {
-      key: "Nauda",
-      value: 150,
-    },
-    {
-      key: "Vārds",
-      value: "John",
-    },
-    {
-      key: "NFC_numurs",
-      value: "03:ab:cd:ef:12:34:56",
-    },
-    {
-      key: "Nauda",
-      value: 200,
+      Vārds: "Sāra",
+      NFC_numurs: "03:ab:cd:ef:12:34:56",
+      Parole: "111",
+      Nauda: 100,
     },
   ];
 
   function getNaudaAndVards(serialNumber) {
-    const item = my_array.find(
-      (obj) => obj.key === "NFC_numurs" && obj.value === serialNumber
-    );
+    const item = my_array.find((obj) => obj.NFC_numurs === serialNumber);
 
     if (item) {
-      const NaudaItem = my_array.find((obj) => obj.key === "Nauda");
-      const VardsItem = my_array.find((obj) => obj.key === "Vārds");
-
-      if (NaudaItem && VardsItem) {
-        const { value: Nauda } = NaudaItem;
-        const { value: Vārds } = VardsItem;
-        return (
-          <div>
-            <p>Vārds: {Vārds}</p>
-            <p>Pieejamā nauda: {Nauda} EUR</p>
-          </div>
-        );
-      }
+      const { Nauda, Vārds } = item;
+      return (
+        <div>
+          <p>Vārds: {Vārds}</p>
+          <p>Tev ir {Nauda} EUR</p>
+        </div>
+      );
     }
 
     return <p>Neatradu NFC īpašnieku.</p>;
   }
+
+  // Function to handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const foundObject = my_array.find(
+      (obj) => obj.Vārds === varDSearch && obj.Parole === paroleSearch
+    );
+
+    if (foundObject) {
+      const { Nauda } = foundObject;
+      console.log("Found object Nauda:", Nauda);
+      setNauda(Nauda);
+    } else {
+      console.log("Object not found");
+    }
+  };
 
   useEffect(() => {
     getNewPoints();
@@ -172,10 +178,36 @@ const Trading = () => {
               changeSerial={setNfcSerialNumber}
               // changeMessage={setMessage}
             />
+            {getNaudaAndVards(nfcSerialNumber)}
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="varDSearch">Vārds</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="varDSearch"
+                  value={varDSearch}
+                  onChange={(e) => setVarDSearch(e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="paroleSearch">Parole</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="paroleSearch"
+                  value={paroleSearch}
+                  onChange={(e) => setParoleSearch(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="btn btn-primary">
+                Submit
+              </button>
+            </form>
+            <div>Tev ir {Nauda} EUR</div>
             {/* <h2>{player?.name}</h2>
             <h3>{player?.points} punkti</h3>
             <h3>Serial: {Nfc}</h3> */}
-            {getNaudaAndVards(nfcSerialNumber)}
             {/* Tavs NFC numurs ir: {nfcSerialNumber} */}
             {/* <div className="btn-group-lg center">
               {[-10, -5, -1, 1, 5, 10].map((Value) => (
